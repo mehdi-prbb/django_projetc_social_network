@@ -15,3 +15,11 @@ class UserRegistrationForm(forms.Form):
         if user:
             raise ValidationError('This Email Already Exists')
         return email
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        user = User.objects.filter(username=username).exists()
+
+        if user:
+            raise ValidationError('This username Already Exists')
+        return username
