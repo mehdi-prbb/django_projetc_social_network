@@ -35,3 +35,9 @@ class UserRegistrationForm(forms.Form):
 
         if pass1 != pass2:
             raise ValidationError("Password Does'nt match together")
+
+
+class UserLogInForm(forms.Form):
+    username = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}))
+
