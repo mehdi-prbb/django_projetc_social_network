@@ -1,10 +1,13 @@
 from django.shortcuts import render
 from django.views import View
 
+from .forms import UserRegistrationForm
+
 
 class RegisterView(View):
     def get(self, request):
-        return render(request, 'accounts/register.html')
+        form = UserRegistrationForm()
+        return render(request, 'accounts/register.html', {'form' : form})
 
     def post(self, request):
         pass
