@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -66,3 +66,9 @@ class UserLogOutView(LoginRequiredMixin, View):
         logout(request)
         messages.success(request, 'you are logged out successfully', 'success')
         return redirect('pages:home')
+
+
+class UserProfileView(LoginRequiredMixin, View):
+    def get(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        return render(request, 'accounts/profile.html', {'user':user})
