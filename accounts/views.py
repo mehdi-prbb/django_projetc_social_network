@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 from .forms import UserRegistrationForm, UserLogInForm
 
@@ -45,3 +45,10 @@ class UserLogInView(View):
                 return redirect('pages:home')
             messages.error(request, 'Wrong password or username', 'danger')
         return render(request, self.template_name, {'form':form})  
+
+
+class UserLogOutView(View):
+    def get(self, request):
+        logout(request)
+        messages.success(request, 'you are logged out successfully', 'success')
+        return redirect('pages:home')
