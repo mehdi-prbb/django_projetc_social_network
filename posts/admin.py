@@ -1,3 +1,12 @@
 from django.contrib import admin
 
-# Register your models here.
+from . models import Post
+
+
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):
+    list_display = ('user', 'slug', 'updated')
+    search_fields = ('slug',)
+    list_filter = ('updated',)
+    raw_id_fields = ('user',)
+    prepopulated_fields = {'slug':('body',)}
