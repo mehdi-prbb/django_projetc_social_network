@@ -7,5 +7,6 @@
     <p>{{ post.body }}</p>
     {% if request.user.id == post.user.id %}
         <a href="{% url 'posts:post_delete' post.id %}" class="btn btn-danger">Delete</a>
+        <a href="{% url 'posts:post_update' post.id %}" class="btn btn-info">Update</a>
     {% endif %}
 {% endblock content %}
