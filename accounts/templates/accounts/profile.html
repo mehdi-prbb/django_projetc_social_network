@@ -12,4 +12,9 @@
         {% if request.user.id == user.id %}
             <a href="{% url 'posts:post_create' %}" class="btn btn-primary mt-3">New Post</a>
         {% endif %}
+        {% if request.user.id != user.id and not is_following %}
+            <a href="{% url 'accounts:user_follow' user.id %}" class="btn btn-primary mt-3">Follow</a>
+        {% elif request.user.id != user.id and is_following %}
+            <a href="{% url 'accounts:user_unfollow' user.id %}" class="btn btn-danger mt-3">UnFollow</a>
+        {% endif %}
 {% endblock content %}
