@@ -16,3 +16,17 @@ class CommentCreateForm(forms.ModelForm):
         widgets = {
             'body' : forms.Textarea(attrs={'class':'form-control'})
         }
+
+
+class CommentReplyForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('body',)
+        labels={
+            'body':False
+        }
+
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['body'].widget = forms.TextInput(attrs={'class':'form-control'})

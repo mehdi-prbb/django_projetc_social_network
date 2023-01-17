@@ -27,7 +27,27 @@
     {% for comment in comments %}
         <div class="card">
             <p class="card-header bg-dark text-white">{{ comment.user }} | {{ comment.created|timesince }}</p>
-            <p class="card-body">{{ comment.body }}</p>
+            <div class="card-body">
+                <p>{{ comment.body }}</p>
+                {% if request.user.is_authenticated %}
+                    <button class="collapsible">Reply</button>
+                    <div class="content">
+                        <form action="{% url 'posts:add_reply' post.id comment.id %}" method="post" class="col-md-6 p-3">
+                            {% csrf_token %}
+                            {{ form_reply }}
+                            <input type="submit" value="send" class="btn btn-info mt-2">
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% with replies=comment.rcomments.all %}
+                {% for reply in replies %}
+                    <div class="bg-primary p-3 m-2">
+                        <p>reply form: {{ reply.user }} | {{ reply.created|timesince }} <br> {{ reply.body }}</p>
+                    </div>
+                {% endfor %}
+            {% endwith %}
         </div>
     {% empty %}
         <p>No comments yet!</p>

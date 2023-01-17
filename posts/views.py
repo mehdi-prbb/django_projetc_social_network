@@ -6,8 +6,8 @@ from django.utils.text import slugify
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
-from . models import Post
-from . forms import CreateUpdatePostForm, CommentCreateForm
+from . models import Post, Comment
+from . forms import CreateUpdatePostForm, CommentCreateForm, CommentReplyForm
 
 
 class PostsPageView(View):
@@ -17,6 +17,7 @@ class PostsPageView(View):
 
 class PostDetailView(View):
     form_class = CommentCreateForm
+    form_class_reply = CommentReplyForm
 
     def setup(self, request, *args, **kwargs):
         self.post_instance = get_object_or_404(Post, id=kwargs['post_id'], slug=kwargs['post_slug'])
@@ -28,6 +29,7 @@ class PostDetailView(View):
             'post':self.post_instance,
             'comments':comments,
             'form':self.form_class,
+            'form_reply':self.form_class_reply,
             })
     
     @method_decorator(login_required)
@@ -100,6 +102,25 @@ class PostCreateView(LoginRequiredMixin, View):
             new_post.save()
             messages.success(request, 'you create new post successfully')
             return redirect('posts:post_detail', new_post.id, new_post.slug)
+
+
+class PostAddReplyView(LoginRequiredMixin, View):
+    form_class = CommentReplyForm
+
+    def post(self, request, *args, **kwargs):
+        post = get_object_or_404(Post, id=kwargs['post_id'])
+        comment = get_object_or_404(Comment, id=kwargs['comment_id'])
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            reply = form.save(commit=False)
+            reply.user = request.user
+            reply.post = post
+            reply.reply = comment
+            reply.is_reply = True
+            reply.save()
+            messages.success(request, 'your reply is submitted successfully.')
+        return redirect('posts:post_detail', post.id, post.slug)
 
 
     
