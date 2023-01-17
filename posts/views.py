@@ -6,7 +6,7 @@ from django.utils.text import slugify
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
-from . models import Post, Comment
+from . models import Post, Comment, Like
 from . forms import CreateUpdatePostForm, CommentCreateForm, CommentReplyForm
 
 
@@ -25,11 +25,15 @@ class PostDetailView(View):
 
     def get(self, request, *args, **kwargs):
         comments = self.post_instance.pcomments.filter(is_reply=False)
+        can_like = False
+        if request.user.is_authenticated and self.post_instance.user_can_like(request.user):
+            can_like = True
         return render(request, 'posts/post_detail.html', {
             'post':self.post_instance,
             'comments':comments,
             'form':self.form_class,
             'form_reply':self.form_class_reply,
+            'can_like':can_like,
             })
     
     @method_decorator(login_required)
@@ -120,6 +124,21 @@ class PostAddReplyView(LoginRequiredMixin, View):
             reply.is_reply = True
             reply.save()
             messages.success(request, 'your reply is submitted successfully.')
+        return redirect('posts:post_detail', post.id, post.slug)
+
+
+
+class PostLikeDislikeView(LoginRequiredMixin, View):
+    def get(self, request, post_id):
+        post = get_object_or_404(Post, id=post_id)
+        like = Like.objects.filter(post=post, user=request.user)
+
+        if like.exists():
+            like.delete()
+            messages.success(request, 'you have already disliked this post.')
+        else:
+            Like.objects.create(post=post, user=request.user)
+            messages.success(request, 'you liked this post.')
         return redirect('posts:post_detail', post.id, post.slug)
 
 

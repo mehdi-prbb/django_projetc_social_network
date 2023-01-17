@@ -3,7 +3,7 @@
 {% block page_title %}Posts Detail{% endblock page_title %}
 
 {% block content %}
-    <p><a href="{% url 'accounts:user_profile' post.user.id %}">{{ post.user.username }}</a> - {{ post.updated|date:"M Y" }}</p>
+    <p><a href="{% url 'accounts:user_profile' post.user.id %}">{{ post.user.username }}</a> - {{ post.updated|date:"M Y" }} | post likes: {{ post.likes_count }}</p>
     <p>{{ post.body }}</p>
     {% if request.user.id == post.user.id %}
         <a href="{% url 'posts:post_delete' post.id %}" class="btn btn-danger">Delete</a>
@@ -11,6 +11,11 @@
     {% endif %}
     
     {% if request.user.is_authenticated %}
+        {% if can_like %}
+            <a href="{% url 'posts:post_like' post.id %}" class="btn btn-danger col-md-2">dislike ({{ post.likes_count }})</a>
+        {% else %}
+            <a href="{% url 'posts:post_like' post.id %}" class="btn btn-primary col-md-2">like ({{ post.likes_count }})</a>
+        {% endif %}
         <form action="" method="post">
             {% csrf_token %}
                 {{ form.as_p }}
