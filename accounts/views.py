@@ -8,8 +8,8 @@ from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 
 
-from .forms import UserRegistrationForm, UserLogInForm
-from .models import Relation
+from .forms import UserRegistrationForm, UserLogInForm, EditUserForm
+from .models import Relation, Profile
 
 
 class UserRegisterView(View):
@@ -131,3 +131,20 @@ class UserUnfollowView(LoginRequiredMixin, View):
         else:
             messages.error(request, 'you are not following this user')
         return redirect('accounts:user_profile', user.id)
+
+
+class EditUserView(LoginRequiredMixin, View):
+    form_class = EditUserForm
+
+    def get(self, request):
+        form = self.form_class(instance=request.user.profile, initial={'email':request.user.email})
+        return render(request, 'accounts/edit_profile.html', {'form':form})
+
+    def post(self, request):
+        form = self.form_class(request.POST, instance=request.user.profile)
+        if form.is_valid():
+            form.save()
+            request.user.email = form.cleaned_data['email']
+            request.user.save()
+            messages.success(request, 'your profile edited successfully')
+        return redirect('accounts:user_profile', request.user.id)
