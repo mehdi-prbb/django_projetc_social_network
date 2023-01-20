@@ -12,9 +12,9 @@
     
     {% if request.user.is_authenticated %}
         {% if can_like %}
-            <a href="{% url 'posts:post_like' post.id %}" class="btn btn-danger col-md-2">dislike ({{ post.likes_count }})</a>
+            <a href="{% url 'posts:post_like' post.id %}" class="btn btn-danger col-md-2">dislike</a>
         {% else %}
-            <a href="{% url 'posts:post_like' post.id %}" class="btn btn-primary col-md-2">like ({{ post.likes_count }})</a>
+            <a href="{% url 'posts:post_like' post.id %}" class="btn btn-primary col-md-2">like</a>
         {% endif %}
         <form action="" method="post">
             {% csrf_token %}
