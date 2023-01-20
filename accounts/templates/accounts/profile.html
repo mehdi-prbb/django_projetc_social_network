@@ -4,6 +4,9 @@
 
 {% block content %}
     <h3 class="text-center">{{ user.username }}</h3>
+    <p>Bio: {{ user.profile.bio }}</p>
+    <p>Age: {{ user.profile.age }}</p>
+    <p>Email: {{ user.email }}</p>
     <div class="card">
         {% for post in posts %}
             <a href="{{ post.get_absolute_url }}" class="card-body">{{ post.body|truncatewords:8 }}</a>

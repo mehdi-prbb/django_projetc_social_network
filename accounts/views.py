@@ -33,7 +33,7 @@ class UserRegisterView(View):
             cd = form.cleaned_data
             User.objects.create_user(cd['username'], cd['email'], cd['password1'])
             messages.success(request, 'you registered successfully', 'success')
-            return redirect('pages:home')
+            return redirect('accounts:user_login')
         return render(request, self.template_name, {'form' : form})
 
 
