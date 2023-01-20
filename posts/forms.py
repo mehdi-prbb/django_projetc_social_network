@@ -30,3 +30,7 @@ class CommentReplyForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['body'].widget = forms.TextInput(attrs={'class':'form-control'})
+
+
+class PostSearchForm(forms.Form):
+    search = forms.CharField()
